@@ -1,0 +1,77 @@
+[
+  {
+    "scenario_id": 1,
+    "invoice_file": "invoice_1_VendorA.pdf",
+    "contract_file": "contract_1_VendorA.pdf",
+    "type": "match",
+    "expected_invoice": {
+      "vendor_name": "Vendor A",
+      "total_amount": 1000.0,
+      "payment_terms": "Net 30"
+    },
+    "expected_findings": {
+      "mismatch": false,
+      "risk_high": false
+    }
+  },
+  {
+    "scenario_id": 2,
+    "invoice_file": "invoice_2_VendorB.pdf",
+    "contract_file": "contract_2_VendorB.pdf",
+    "type": "term_mismatch",
+    "expected_invoice": {
+      "vendor_name": "Vendor B",
+      "total_amount": 2000.0,
+      "payment_terms": "Net 15"
+    },
+    "expected_findings": {
+      "mismatch": true,
+      "risk_high": false
+    }
+  },
+  {
+    "scenario_id": 3,
+    "invoice_file": "invoice_3_VendorC.pdf",
+    "contract_file": "contract_3_VendorC.pdf",
+    "type": "risk_liability",
+    "expected_invoice": {
+      "vendor_name": "Vendor C",
+      "total_amount": 5000.0,
+      "payment_terms": "Net 30"
+    },
+    "expected_findings": {
+      "mismatch": false,
+      "risk_high": true
+    }
+  },
+  {
+    "scenario_id": 4,
+    "invoice_file": "invoice_4_VendorD.pdf",
+    "contract_file": "contract_4_VendorD.pdf",
+    "type": "match",
+    "expected_invoice": {
+      "vendor_name": "Vendor D",
+      "total_amount": 1500.0,
+      "payment_terms": "Net 45"
+    },
+    "expected_findings": {
+      "mismatch": false,
+      "risk_high": false
+    }
+  },
+  {
+    "scenario_id": 5,
+    "invoice_file": "invoice_5_VendorE.pdf",
+    "contract_file": "contract_5_VendorE.pdf",
+    "type": "term_mismatch",
+    "expected_invoice": {
+      "vendor_name": "Vendor E",
+      "total_amount": 3000.0,
+      "payment_terms": "Immediate"
+    },
+    "expected_findings": {
+      "mismatch": true,
+      "risk_high": false
+    }
+  }
+]
