@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-# 0. Prep Artifacts
-echo "Preparing artifacts..."
-mkdir -p docs/artifacts
-cp "/Users/kaushikreddy/.gemini/antigravity/brain/3f544612-98ce-40c8-aa26-c0839038d485/"*.md docs/artifacts/ || echo "No artifacts found to copy"
-
 # Function for idempotent commit
 commit() {
     git commit -m "$1" || echo "Step '$1' - Nothing to commit (already done)"
@@ -27,7 +22,7 @@ git add backend/requirements.txt backend/Dockerfile*
 commit "backend: Add requirements and Dockerfiles"
 
 # 4. DB
-git add backend/shared/database.py backend/alembic.ini backend/migrations/env.py
+git add backend/shared/database.py backend/alembic.ini backend/migrations/env.py backend/migrations/script.py.mako
 commit "backend: Setup database connection and alembic"
 
 git add backend/shared/models.py
@@ -42,6 +37,9 @@ commit "backend: Define Pydantic schemas"
 # 5. Logic
 git add backend/shared/ingestion.py
 commit "backend: Implement parsing and vector ingestion logic"
+
+git add backend/shared/extraction.py
+commit "backend: Implement extraction logic"
 
 git add backend/worker/
 commit "backend: Setup Celery worker and tasks"
@@ -71,11 +69,10 @@ commit "backend: Add unit tests"
 git add backend/create_risky_contract.py backend/create_bad_invoice.py scripts/
 commit "chore: Add synthetic data generation scripts"
 
-git add *.pdf create_pdf.py
+git add *.pdf create_pdf.py backend/*.pdf
 commit "assets: Add test PDF files"
 
 # 7. Frontend
-# Fixed next.config.ts
 git add frontend/package.json frontend/tsconfig.json frontend/next.config.ts frontend/postcss.config.mjs frontend/Dockerfile
 commit "frontend: Initialize Next.js app with Docker"
 
