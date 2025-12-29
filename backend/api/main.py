@@ -7,15 +7,17 @@ import uuid
 import logging
 
 from shared.database import get_db, engine, Base
-from shared.models import Document, DocumentStatus
+from shared.models import Document, DocumentStatus, User, UserRole
+from shared.auth import create_access_token, verify_password, get_password_hash, RoleChecker
 # from worker.celery_app import celery_app # Deferred import to avoid circular issues if any, but usually fine.
-from celery import Celery
-from celery import Celery
 from celery import Celery
 from qdrant_client.http import models as qmodels
 from pydantic import BaseModel
 from typing import Optional, List
 from shared.middleware import RequestLoggerMiddleware, RateLimitMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
+from fastapi import status
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
@@ -27,9 +29,10 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="AI Contract Intelligence API")
 
 # CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,7 +47,7 @@ MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 MINIO_BUCKET = os.getenv("MINIO_BUCKET", "documents")
-MINIO_SECURE = False
+MINIO_SECURE = os.getenv("MINIO_SECURE", "False").lower() == "true"
 
 minio_client = Minio(
     MINIO_ENDPOINT.replace("http://", "").replace("https://", ""), # Minio client expects host:port
@@ -366,9 +369,6 @@ def get_eval_report():
         return {"metrics": {"extraction_f1": 0, "mismatch_accuracy": 0, "risk_recall": 0}, "details": [], "timestamp": "N/A"}
 
 # --- Auth ---
-from shared.auth import create_access_token, verify_password, get_password_hash, RoleChecker
-from fastapi.security import OAuth2PasswordRequestForm
-from shared.models import User, UserRole
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):

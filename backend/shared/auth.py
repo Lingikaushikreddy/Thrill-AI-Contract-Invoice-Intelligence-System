@@ -10,11 +10,17 @@ from .models import User, UserRole
 import os
 
 # Secrets (Should be in .env)
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # Use a default for dev/test but warn. In strict prod this should raise error
+    import logging
+    logging.warning("SECRET_KEY not set in environment. Using default unsafe key!")
+    SECRET_KEY = "supersecretkey"
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def verify_password(plain_password, hashed_password):

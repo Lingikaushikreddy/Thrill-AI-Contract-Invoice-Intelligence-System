@@ -20,6 +20,7 @@ MINIO_ENDPOINT=minio:9000
 MINIO_ACCESS_KEY=minioadmin
 MINIO_SECRET_KEY=minioadmin
 MINIO_BUCKET=documents
+MINIO_SECURE=False  # Set to True if using HTTPS for MinIO
 
 # Vector DB
 QDRANT_HOST=qdrant
@@ -34,6 +35,7 @@ MISTRAL_API_KEY=your_key_here
 SECRET_KEY=change_this_to_a_secure_random_string_in_production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+ALLOWED_ORIGINS=http://localhost:3000,https://your-domain.com
 ```
 
 ## Running the System
@@ -54,8 +56,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 - **HTTPS**: Run the application behind a reverse proxy (Nginx, Traefik) with SSL configured.
 - **Persistence**: Ensure Docker volumes for Postgres, MinIO, and Qdrant are backed up.
 - **Scaling**: The Celery worker can be scaled horizontally (`docker-compose up --scale worker=3`).
+- **CORS**: Ensure `ALLOWED_ORIGINS` includes your frontend domain.
 
 ## Troubleshooting
 
 - **Database Connection**: If the API fails to connect to DB on startup, ensure Postgres is healthy (`docker-compose ps`).
 - **LLM Errors**: Verify API keys and quotas.
+- **Frontend Build**: If the frontend fails to build, ensure `npm install` has been run and node modules are up to date.
