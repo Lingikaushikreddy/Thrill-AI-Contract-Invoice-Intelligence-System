@@ -3,7 +3,7 @@
 ## Implemented Features
 
 - [x] **JWT Authentication**: Stateless authentication using JSON Web Tokens.
-- [x] **Password Hashing**: Bcrypt hashing for user passwords (via `passlib`).
+- [x] **Password Hashing**: Argon2 hashing for user passwords (via `passlib` + `argon2-cffi`).
 - [x] **RBAC (Role-Based Access Control)**:
     - **Admin**: Full access.
     - **AP (Accounts Payable)**: Can upload invoices and view documents.
@@ -11,6 +11,11 @@
 - [x] **Input Validation**: Pydantic models validate all incoming API requests.
 - [x] **Rate Limiting**: Redis-backed rate limiter on API endpoints (defualt 60 req/min).
 - [x] **Request Logging**: Middleware logs all requests and processing times.
+- [x] **Secure Configuration**:
+    - Hardcoded secrets removed.
+    - CORS restrictive configuration (via `ALLOWED_ORIGINS`).
+    - MinIO secure connection configurable.
+- [x] **Dependency Hardening**: Vulnerable packages updated or replaced (e.g. `passlib[argon2]`).
 
 ## Production Requirements (To Do)
 
