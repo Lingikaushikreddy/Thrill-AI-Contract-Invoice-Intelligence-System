@@ -1,14 +1,10 @@
-from fastapi.testclient import TestClient
-from api.main import app
 
-client = TestClient(app)
-
-def test_health_check():
+def test_health_check(client):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "services": {"database": "connected", "minio": "connected"}}
 
-def test_upload_unauthorized():
+def test_upload_unauthorized(client):
     # Attempt upload without token
     files = {'file': ('test.txt', b"content")}
     response = client.post("/upload", files=files)
